@@ -2,13 +2,18 @@ const dotenv = require('dotenv');
 const path = require('path');
 const Joi = require('joi');
 
-dotenv.config({ path: path.join(__dirname, '../../.env') });
+
+
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
     PORT: Joi.number().default(3000),
-    MONGODB_URL: Joi.string().required().description('Mongo DB url'),
+    DB_HOST: Joi.string().required().description('DB Host'),
+    DB_USER: Joi.string().required().description('DB User'),
+    DB_PASS: Joi.string().required().description('DB Password'),
+    DB_NAME: Joi.string().required().description('DB Name'),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number().default(30).description('minutes after which access tokens expire'),
     JWT_REFRESH_EXPIRATION_DAYS: Joi.number().default(30).description('days after which refresh tokens expire'),
@@ -35,13 +40,11 @@ if (error) {
 module.exports = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
-  mongoose: {
-    url: envVars.MONGODB_URL + (envVars.NODE_ENV === 'test' ? '-test' : ''),
-    options: {
-      useCreateIndex: true,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    },
+  db:{
+    host:envVars.DB_HOST,
+    user:envVars.DB_USER,
+    pass:envVars.DB_PASS,
+    name:envVars.DB_NAME
   },
   jwt: {
     secret: envVars.JWT_SECRET,
