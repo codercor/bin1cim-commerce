@@ -6,8 +6,7 @@ async function add(order) {
         let newOrder = await Order.create(order);
         order.orderDetails.forEach(async function (orderDetail){
             orderDetail.orderId = newOrder.dataValues.id;
-          let r = await orderDetailService.add(orderDetail);
-          console.log(r,"99");
+        await orderDetailService.add(orderDetail);
         })
         return newOrder ? {...newOrder,status:true}:{status:false};
     } catch (error) {

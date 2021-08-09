@@ -21,6 +21,17 @@ async function getAll() {
     
 }
 
+
+async function getOne(id) {
+    try {
+        let product = await Product.findOne({where:{id}});
+        return product ? {product,status:true}:{status:false};
+    } catch (error) {
+        return {status:false};
+    }
+    
+}
+
 async function deleteOne(id) {
     try {
         let status = await Product.destroy({where:{id}});
@@ -39,4 +50,4 @@ async function update(updatedData) {
     }
 }
 
-module.exports = {add,getAll,deleteOne,update}
+module.exports = {add,getAll,getOne,deleteOne,update}

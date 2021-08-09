@@ -16,15 +16,16 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import Product from './product.vue';
+import Product from '../../components/common/ProductCard';
 
 export default {
   data: () => ({}),
   components:{
     Product
   },
-  mounted() {
-    console.log(this.$route);
+  mounted(){
+
+    console.log("home home");
   },
   computed: {
     ...mapGetters(["products"]),
@@ -34,7 +35,6 @@ export default {
   },
   async beforeMount() {
     await this.getProducts();
-    console.log(this.products);
   },
 };
 </script>

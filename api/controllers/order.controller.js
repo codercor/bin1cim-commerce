@@ -2,6 +2,7 @@ const {orderService} = require("../services");
 
 async function add(req,res) {
     const {order} = req.body;
+    order.userId = req.user.id;
     let response = await orderService.add(order);
     res.json(response);
 }

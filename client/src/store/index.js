@@ -22,7 +22,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       key: "BIN1CIM",
-      paths: ['user'],
+      paths: ['user','panel'],
       storage: {
         getItem: (key) => ls.get(key),
         setItem: (key, value) => ls.set(key, value),

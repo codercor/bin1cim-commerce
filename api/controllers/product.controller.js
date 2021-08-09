@@ -11,7 +11,7 @@ async function add(req,res) {
     res.json(response);
 }
 async function getOne(req,res) {
-    let response = await productService.getOne();
+    let response = await productService.getOne(req.params.id);
     res.json(response);
 }
 async function getAll(req,res) {

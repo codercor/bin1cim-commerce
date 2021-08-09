@@ -1,6 +1,8 @@
 <template>
   <v-container>
-      panel
+      <span class="overline">
+         İşletme Paneli
+      </span>
       <router-view></router-view>
   </v-container>
 </template>

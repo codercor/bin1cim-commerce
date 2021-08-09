@@ -15,19 +15,23 @@ const panelRoutes = [
     component: () => import('../views/panel/home.vue'),
   },
   {
-    path: '/cart',
+    path: 'cart',
     name: 'Cart',
     component: () => import('../views/panel/cart.vue'),
-  },  {
-    path: '/order',
+  }, {
+    path: 'order',
     name: 'Orders',
     component: () => import('../views/panel/orders.vue'),
   },
   {
-    path: '/settings',
+    path: 'settings',
     name: 'Settings',
     component: () => import('../views/panel/settings.vue'),
   },
+  {
+    path:'*',
+    component:() => import('../views/404.vue'),
+  }
 ];
 const adminRoutes = [
   {
@@ -36,24 +40,25 @@ const adminRoutes = [
     component: () => import('../views/admin/home.vue')
   },
   {
-    path: '/history',
+    path: 'history',
     name: 'History',
     component: () => import('../views/admin/history.vue')
   },
   {
-    path: '/incomings',
+    path: 'incomings',
     name: 'Incomings',
     component: () => import('../views/admin/incomings.vue')
-  },  {
-    path: '/users',
+  }, {
+    path: 'users',
     name: 'Users',
     component: () => import('../views/admin/users.vue')
   },
 
+
 ]
 
-panelRoutes.forEach((r)=>{r.meta={auth:true}});
-adminRoutes.forEach((r)=>{r.meta={admin:true}});
+panelRoutes.forEach((r) => { r.meta = { auth: true } });
+adminRoutes.forEach((r) => { r.meta = { admin: true } });
 
 const routes = [
   {
@@ -65,7 +70,7 @@ const routes = [
     path: '/panel',
     component: () => import('../views/panel'),
     children: [...panelRoutes],
-    
+
   },
   {
     path: '/admin',
@@ -85,7 +90,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   if (to.meta.admin) {
     const { token, isLoggedIn, role } = store.getters.user;
-    console.log(role,999999999);
+    console.log(role, 999999999);
     if (token && isLoggedIn && role == 1) {
       next();
     } else {
@@ -105,9 +110,9 @@ router.beforeEach((to, from, next) => {
       next('/');
     }
   } else {
-    const { token, isLoggedIn,role } = store.getters.user;
-    if(to.name == "Login" && token && isLoggedIn && role != 1) next("/panel");
-    else if(to.name == "Login" && token && isLoggedIn && role == 1) next("/admin");
+    const { token, isLoggedIn, role } = store.getters.user;
+    if (to.name == "Login" && token && isLoggedIn && role != 1) next("/panel");
+    else if (to.name == "Login" && token && isLoggedIn && role == 1) next("/admin");
     next();
   }
 })

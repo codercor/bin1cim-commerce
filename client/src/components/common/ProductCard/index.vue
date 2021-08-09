@@ -100,20 +100,8 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <h3
-              v-if="(amount > 0 && amount &lt; Number(Object.keys(product.prices[0])[0]))"
-            >
-              Tutar {{ Object.values(product.prices[0])[0] * amount }}₺
-            </h3>
-            <h3
-              v-if=" (amount >= Number(Object.keys(product.prices[0])[0]) && amount &lt; Number(Object.keys(product.prices[1])[0]))"
-            >
-              Tutar {{ Object.values(product.prices[1])[0] * amount }}₺
-            </h3>
-            <h3
-              v-if="amount >= Number(Object.keys(product.prices[1])[0]) && amount &lt;= Number(Object.keys(product.prices[2])[0])"
-            >
-              Tutar {{ Object.values(product.prices[2])[0] * amount }}₺
+            <h3>
+              Tutar {{ unitPrice * amount }}₺
             </h3>
           </v-col>
         </v-row>
@@ -124,6 +112,7 @@
         :disabled="
           amount > Number(Object.keys(product.prices[2])[0]) || amount < 1
         "
+        @click="addToCart()" 
         color="orange"
         text
       >
@@ -136,9 +125,6 @@
 <script>
 export default {
   props: ["product"],
-  mounted() {
-    console.log(this.product);
-  },
   filters: {
     getAmount(data) {
       return Object.keys(data)[0];
@@ -176,6 +162,9 @@ export default {
       return this.product.prices.map((price)=>{ 
         return Number(Object.keys(price)[0]);
       })
+    },
+    totalPrice(){
+      return this.unitPrice * this.amount;
     }
   },
   data() {
@@ -188,6 +177,17 @@ export default {
       console.log(this.unitPrice);
     },
   },
+  methods: {
+    addToCart(){
+      console.log("selami");
+      let newOrderDetail = {
+        productId: this.product.id,
+        amount: this.amount,
+        price: this.totalPrice,
+      };
+      this.$store.commit('addToCart',newOrderDetail);
+    }
+  }
 };
 </script>
 
