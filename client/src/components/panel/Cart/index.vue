@@ -52,7 +52,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <h3 class="overline">Toplam: 60000$</h3>
+        <h3 class="overline">Toplam: {{totalPrice}}₺ </h3>
       </v-col>
       <v-col cols="4">
         <v-btn @click="submitTheOrder" :disabled="cart.length < 1" class="w-100" color="primary"

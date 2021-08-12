@@ -52,7 +52,7 @@
       </div>
       <div>
         {{ product.prices[2] | getAmount }} adetten fazlası için iletişime geçin
-        <v-btn icon> <v-icon>mdi-whatsapp</v-icon> </v-btn>
+        <v-btn icon @click="openWhatsapp" > <v-icon>mdi-whatsapp</v-icon> </v-btn>
         <v-btn icon> <v-icon>mdi-phone</v-icon></v-btn>
       </div>
     </v-card-text>
@@ -186,6 +186,9 @@ export default {
         price: this.totalPrice,
       };
       this.$store.commit('addToCart',newOrderDetail);
+    },
+    openWhatsapp(){
+      window.open(`http://api.whatsapp.com/send?phone=+905413247376&text=Merhaba ${this.product.name} adlı, ${this.product.id} numaralı ürününüz ile ilgili görüşmek istiyorum.  `,'_blank');
     }
   }
 };

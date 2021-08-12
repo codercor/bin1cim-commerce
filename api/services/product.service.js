@@ -11,9 +11,12 @@ async function add(product) {
    
 }
 
-async function getAll() {
+async function getAll(page) {
     try {
-        let products = await Product.findAll({});
+        let products = await Product.findAll({
+          limit: page * 9,
+          offset: (page - 1) * 9
+        });
         return products ? {products,status:true}:{status:false};
     } catch (error) {
         return {status:false};

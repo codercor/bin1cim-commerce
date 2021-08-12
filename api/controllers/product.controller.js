@@ -15,7 +15,8 @@ async function getOne(req,res) {
     res.json(response);
 }
 async function getAll(req,res) {
-        let response = await productService.getAll();
+        let page = req.query.page || 1;
+        let response = await productService.getAll(page);
         res.json(response);
 }
 async function deleteOne(req,res) {
