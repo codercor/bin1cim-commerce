@@ -1,4 +1,4 @@
-const {product:Product} = require("../models");
+const {product:Product, product} = require("../models");
 
 async function add(product) {
     console.log(product);
@@ -14,10 +14,10 @@ async function add(product) {
 async function getAll(page) {
     try {
         let products = await Product.findAll({
-          limit: page * 9,
-          offset: (page - 1) * 9
+          limit:  6,
+          offset: (page - 1) * 6
         });
-        return products ? {products,status:true}:{status:false};
+        return products ? {products,status:true,length:products.length}:{status:false};
     } catch (error) {
         return {status:false};
     }

@@ -8,33 +8,36 @@
         v-for="product in products"
         :key="product.id"
       >
-      <Product :product="product"/>
+        <Product :product="product" />
       </v-col>
     </v-row>
+    <infinite-loading @infinite="loadProdutcs"></infinite-loading>
   </v-container>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import Product from '../../components/common/ProductCard';
-
+import Product from "../../components/common/ProductCard";
+import InfiniteLoading from 'vue-infinite-loading';
 export default {
-  data: () => ({}),
-  components:{
-    Product
-  },
-  mounted(){
-
-    console.log("home home");
+  data: () => ({
+    page:1
+  }),
+  components: {
+    Product, InfiniteLoading,
   },
   computed: {
     ...mapGetters(["products"]),
   },
   methods: {
     ...mapActions(["getProducts"]),
+   loadProdutcs() {
+     console.log(this.page);
+     this.getProducts(this.page++);
+   }
   },
   async beforeMount() {
-    await this.getProducts();
+    await this.getProducts(1);
   },
 };
 </script>
