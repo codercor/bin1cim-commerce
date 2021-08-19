@@ -1,7 +1,8 @@
 <template>
   <v-card class="mx-auto" max-width="400">
-    <v-carousel :show-arrows="false">
+    <v-carousel    height="250" :show-arrows="false">
       <v-carousel-item
+   
         v-for="(item, i) in product.images"
         :key="i"
         :src="'http://localhost:3000/images/' + item"

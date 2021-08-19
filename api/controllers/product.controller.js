@@ -16,7 +16,9 @@ async function getOne(req,res) {
 }
 async function getAll(req,res) {
         let page = req.query.page || 1;
-        let response = await productService.getAll(page);
+        let keyword = req.query.keyword || '';
+        console.log(keyword);
+        let response = await productService.getAll({page,keyword});
         res.json(response);
 }
 async function deleteOne(req,res) {

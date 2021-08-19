@@ -4,14 +4,13 @@ import axios from '@/services/axios';
 export default {
     state: {
         products: [],
+        pageLength: 0,
         cart: [],
-        orders: []
+        orders: [],
+        productPerPage: 6
 
     },
     mutations: {
-        setProducts(state, products) {
-            state.products = [...state.products, ...products]
-        },
         addToCart(state, payload) {
             state.cart.push(payload)
         },
@@ -20,19 +19,51 @@ export default {
         },
         setCart(state, cart) {
             state.cart = cart
+        },
+        addToProducts(state, products) {
+            console.log("şimdi ekleme kodu çalışacak");
+            state.products = [...state.products, ...products];
+            console.log("çalışmıyor mu acaba", state.products);
+        },
+        setProducts(state, products) {
+            state.products = products;
+        },
+        setPageLength(state, pageLength) {
+            state.pageLength = pageLength;
         }
 
     },
     actions: {
-        async getProducts({ commit }, page = 1) {
-            const response = await axios.get("/product?page=" + page);
-            console.log(response.products);
+        async searchProduct({ commit, state }, payload) {
+            let response = await axios.get(`/product?page=${payload.page}&keyword=${payload.keyword}`);
+            console.log(response);
             response.products.forEach(product => {
                 product.images = eval(product.images);
                 product.prices = eval(product.prices)
             })
             commit("setProducts", response.products);
-            console.log("çalıştı");
+            commit("setPageLength", Math.ceil(response.length / state.productPerPage));
+        },
+        async getProducts({ commit, state }, page = 1) {
+            try {
+                const response = await axios.get("/product?&page=" + page);
+                console.log(response);
+                response.products.forEach(product => {
+                    product.images = eval(product.images);
+                    product.prices = eval(product.prices)
+                })
+                console.log("şimdi gelen veri ile çalıştırılıp eklenecek", response.products);
+                commit("setProducts", response.products);
+                commit("setPageLength", Math.ceil(response.length / state.productPerPage));
+
+            } catch (e) {
+                commit("setProducts", [])
+                commit("setPageLength", 0)
+                console.log(e);
+            }
+        },
+        unloadProducts({ commit }) {
+            commit("setProducts", []);
         },
         async submitOrder({ state }, payload) {
             let order = {
@@ -64,6 +95,12 @@ export default {
 
         cart(state) {
             return state.cart;
+        },
+        pageLength(state) {
+            return state.pageLength;
+        },
+        productPerPage(state) {
+            return state.productPerPage;
         }
     },
 }
