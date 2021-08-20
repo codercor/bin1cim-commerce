@@ -23,7 +23,9 @@ async function getAll({page, keyword}) {
                 }
             }
         });
-        let length = await Product.count();
+        let length;
+        if (keyword.length>0) length =  await Product.count({ where: { name: { [Op.like]: `%${keyword}%` } } });
+        else length = await Product.count();
         return products ? { products, status: true, length } : { status: false };
     } catch (error) {
         return { status: false };

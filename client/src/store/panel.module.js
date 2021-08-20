@@ -34,19 +34,10 @@ export default {
 
     },
     actions: {
-        async searchProduct({ commit, state }, payload) {
-            let response = await axios.get(`/product?page=${payload.page}&keyword=${payload.keyword}`);
-            console.log(response);
-            response.products.forEach(product => {
-                product.images = eval(product.images);
-                product.prices = eval(product.prices)
-            })
-            commit("setProducts", response.products);
-            commit("setPageLength", Math.ceil(response.length / state.productPerPage));
-        },
-        async getProducts({ commit, state }, page = 1) {
+        async getProducts({ commit, state }, {page,keyword}) {
+            if(keyword==null) keyword = "";
             try {
-                const response = await axios.get("/product?&page=" + page);
+                const response = await axios.get(`/product?page=${page}&keyword=${keyword}`);
                 console.log(response);
                 response.products.forEach(product => {
                     product.images = eval(product.images);
