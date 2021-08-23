@@ -1,11 +1,10 @@
 <template>
   <v-card class="mx-auto" max-width="400">
-    <v-carousel    height="250" :show-arrows="false">
+    <v-carousel height="250" :show-arrows="false">
       <v-carousel-item
-   
         v-for="(item, i) in product.images"
         :key="i"
-        :src="'http://localhost:3000/images/' + item"
+        :src="'http://192.168.1.3:3000/images/' + item"
       ></v-carousel-item>
     </v-carousel>
     <v-card-title> {{ product.name }} </v-card-title>
@@ -18,42 +17,37 @@
     <v-card-subtitle class="pb-0 pt-0"> Fiyat Aralıkları </v-card-subtitle>
     <v-card-text class="text--primary">
       <div>
-        1 - {{ unitAmounts[0]}} adet -
-        {{ unitPrices[0] }}₺
+        1 - {{ unitAmounts[0] }} adet - {{ unitPrices[0] }}₺
         <v-chip
-          v-if="
-            amount > 0 && amount < unitAmounts[0]
-          "
+          v-if="amount > 0 && amount < unitAmounts[0]"
           color="green white--text"
         >
           <v-icon>mdi-check</v-icon>
         </v-chip>
       </div>
       <div>
-        {{ unitAmounts[0] }}-{{
-         unitAmounts[1]
-        }}
-        adet - {{unitPrices[1]}} ₺<v-chip
-          v-if="
-            amount < unitAmounts[1] && amount >= unitAmounts[0]
-          "
+        {{ unitAmounts[0] }}-{{ unitAmounts[1] }} adet -
+        {{ unitPrices[1] }} ₺<v-chip
+          v-if="amount < unitAmounts[1] && amount >= unitAmounts[0]"
           color="green white--text"
         >
           <v-icon>mdi-check</v-icon>
         </v-chip>
       </div>
       <div>
-        {{ unitAmounts[1] }}-{{
-          unitAmounts[2]
-        }}
-        adet - {{unitPrices[2]}}₺
-        <v-chip v-if="amount <= unitAmounts[2] && amount >= unitAmounts[1]" color="green white--text">
+        {{ unitAmounts[1] }}-{{ unitAmounts[2] }} adet - {{ unitPrices[2] }}₺
+        <v-chip
+          v-if="amount <= unitAmounts[2] && amount >= unitAmounts[1]"
+          color="green white--text"
+        >
           <v-icon>mdi-check</v-icon>
         </v-chip>
       </div>
       <div>
         {{ product.prices[2] | getAmount }} adetten fazlası için iletişime geçin
-        <v-btn icon @click="openWhatsapp" > <v-icon>mdi-whatsapp</v-icon> </v-btn>
+        <v-btn icon @click="openWhatsapp">
+          <v-icon>mdi-whatsapp</v-icon>
+        </v-btn>
         <v-btn icon> <v-icon>mdi-phone</v-icon></v-btn>
       </div>
     </v-card-text>
@@ -101,9 +95,7 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <h3>
-              Tutar {{ unitPrice * amount }}₺
-            </h3>
+            <h3>Tutar {{ unitPrice * amount }}₺</h3>
           </v-col>
         </v-row>
       </div>
@@ -113,13 +105,21 @@
         :disabled="
           amount > Number(Object.keys(product.prices[2])[0]) || amount < 1
         "
-        @click="addToCart()" 
+        @click="addToCart()"
         color="orange"
         text
       >
         <v-icon left> mdi-cart</v-icon> Sepete Ekle
       </v-btn>
     </v-card-actions>
+    <v-snackbar timeout="1000" v-model="snackbar" color="green" center shaped top>
+      <v-icon> mdi-check </v-icon> Ürün Sepete Eklendi.
+      <template v-slot:action="{ attrs }">
+        <v-btn  text v-bind="attrs" @click="snackbar = false">
+          Tamam
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -136,9 +136,8 @@ export default {
   },
   computed: {
     unitPrice: function () {
-      const {amount,product} = this;
+      const { amount, product } = this;
       if (amount > 0 && amount < Number(Object.keys(product.prices[0])[0])) {
-       
         return Number(Object.values(product.prices[0])[0]);
       } else if (
         amount >= Number(Object.keys(product.prices[0])[0]) &&
@@ -149,28 +148,29 @@ export default {
         amount >= Number(Object.keys(this.product.prices[1])[0]) &&
         amount <= Number(Object.keys(this.product.prices[2])[0])
       ) {
-             return Number(Object.values(product.prices[2])[0]);
-      }else{
+        return Number(Object.values(product.prices[2])[0]);
+      } else {
         return null;
       }
     },
     unitPrices: function () {
-      return this.product.prices.map((price)=>{
+      return this.product.prices.map((price) => {
         return Number(Object.values(price)[0]);
-      })
+      });
     },
     unitAmounts: function () {
-      return this.product.prices.map((price)=>{ 
+      return this.product.prices.map((price) => {
         return Number(Object.keys(price)[0]);
-      })
+      });
     },
-    totalPrice(){
+    totalPrice() {
       return this.unitPrice * this.amount;
-    }
+    },
   },
   data() {
     return {
       amount: 1,
+      snackbar: false,
     };
   },
   watch: {
@@ -179,19 +179,23 @@ export default {
     },
   },
   methods: {
-    addToCart(){
+    addToCart() {
       console.log("selami");
+      this.snackbar = true;
       let newOrderDetail = {
         productId: this.product.id,
         amount: this.amount,
         price: this.totalPrice,
       };
-      this.$store.commit('addToCart',newOrderDetail);
+      this.$store.commit("addToCart", newOrderDetail);
     },
-    openWhatsapp(){
-      window.open(`http://api.whatsapp.com/send?phone=+905413247376&text=Merhaba ${this.product.name} adlı, ${this.product.id} numaralı ürününüz ile ilgili görüşmek istiyorum.  `,'_blank');
-    }
-  }
+    openWhatsapp() {
+      window.open(
+        `http://api.whatsapp.com/send?phone=+905413247376&text=Merhaba ${this.product.name} adlı, ${this.product.id} numaralı ürününüz ile ilgili görüşmek istiyorum.  `,
+        "_blank"
+      );
+    },
+  },
 };
 </script>
 

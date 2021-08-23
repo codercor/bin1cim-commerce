@@ -6,13 +6,25 @@ const sequelize = new Sequelize('bin1cim-commerce', 'root', '', {
     dialect: 'mysql',
     logging:false,
 });
-
-sequelize.authenticate().then(() => {
+let counter = 0;
+let connect = ()=>{sequelize.authenticate().then(() => {
     logger.info('Connected to MySQL');
  
 }).catch((error) => {
-    console.error('Unable to connect to the database:', error);
+    counter++;
+    if(counter > 5){
+        //stop node js
+        logger.error('Can not connect to MySQL');
+        process.exit(1);
+        
+    }
+    console.error('Unable to connect to the database retrying...'+counter);
+    setTimeout(() => {
 
-})
+        connect();
+    }, 2000);
+
+})}
+connect();
 
 module.exports = sequelize;

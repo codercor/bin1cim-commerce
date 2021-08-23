@@ -19,7 +19,7 @@ const panelRoutes = [
     name: 'Cart',
     component: () => import('../views/panel/cart.vue'),
   }, {
-    path: 'order',
+    path: 'orders',
     name: 'Orders',
     component: () => import('../views/panel/orders.vue'),
   },

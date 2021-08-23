@@ -17,7 +17,7 @@ async function add(order) {
 async function getAll() {
     try {
         let status = await Order.findAll();
-        return status ? {...status,status:true}:{status:false};
+        return status ? {orders:[...status],status:true}:{status:false};
     } catch (error) {
         return {status:false};
     }
