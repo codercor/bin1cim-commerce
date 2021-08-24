@@ -56,4 +56,7 @@ async function update(updatedData) {
     }
 }
 
+
+
+
 module.exports = {add,getAll,getCompanyOrders,update,deleteOne}
