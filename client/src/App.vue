@@ -31,9 +31,6 @@ import SideMenu from './components/common/SideMenu'
 export default {
   components: { Cart,SideMenu },
   data: () => ({ cartDrawer: false, menuDrawer: false }),
-  mounted() {
-    console.log(this.user);
-  },
   computed: {
     ...mapGetters(["user"]),
     isUser() {

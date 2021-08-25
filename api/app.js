@@ -29,7 +29,7 @@ app.use(helmet());
 
 // parse json request body
 app.use(express.json());
-
+app.disable('etag');
 // parse urlencoded request body
 app.use(express.urlencoded({ extended: true }));
 

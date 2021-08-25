@@ -11,10 +11,10 @@ async function add(orderDetail) {
 
 async function getallOrderDetailsByOrderId(orderId) {
     try {
-        let status = await Product.findAll({where:{orderId}});
-        return status ? {...status,status:true}:{status:false};
+        let orderDetails = await OrderDetail.findAll({where:{orderId}});
+        return orderDetails ? orderDetails:[];
     } catch (error) {
-        return {status:false};
+        return ['err'];
     }
 }
 

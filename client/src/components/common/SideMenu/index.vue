@@ -34,6 +34,12 @@
             </v-list-item-icon>
             <v-list-item-title>Siparişlerim</v-list-item-title>
           </v-list-item>
+              <v-list-item exact to="/panel/settings">
+            <v-list-item-icon>
+              <v-icon>mdi-cogs</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Ayarlar</v-list-item-title>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
     </div>

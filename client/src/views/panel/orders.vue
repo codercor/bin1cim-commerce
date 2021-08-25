@@ -1,139 +1,78 @@
 <template>
   <v-container>
-        <v-card>
-    <v-card-title>
-      Siparişleriniz
-      <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Ara"
-        single-line
-        hide-details
-      ></v-text-field>
-    </v-card-title>
-    <v-data-table
-      :headers="headers"
-      :items="desserts"
-      :search="search"
-    ></v-data-table>
-  </v-card>
+    <v-card>
+      <v-card-title>
+        Siparişleriniz
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Ara"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="desserts"
+        :search="search"
+        :single-expand="true"
+        :expanded.sync="expanded"
+        show-expand
+      >
+        <template  v-slot:expanded-item="{ item }">
+         <div style="position:absolute">
+          <OrderDetails :items="item.orderDetails" />
+         </div>
+
+        </template>
+      </v-data-table>
+    </v-card>
   </v-container>
 </template>
 
 <script>
-import axios from '@/services/axios'
- export default {
-    async mounted(){
-        let response = await axios.get('/order'); 
-        this.desserts = response.orders;
-        this.headers = []
-         Object.keys(this.desserts[0]).forEach(key => {
-            this.headers.push({text: key, value: key})  
-         })
-         console.log(this.headers, this.desserts);
-     },
-    data () {
-      return {
-        search: '',
-        headers: [
-          {
-            text: 'Dessert (100g serving)',
-            align: 'start',
-            sortable: false,
-            value: 'name',
-          },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' },
-        ],
-        desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            iron: '1%',
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            iron: '1%',
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            iron: '7%',
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            iron: '8%',
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            iron: '16%',
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-            iron: '0%',
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-            iron: '2%',
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-            iron: '45%',
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-            iron: '22%',
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-            iron: '6%',
-          },
-        ],
-      }
-    },
-  }
+import axios from "@/services/axios";
+import { mapGetters } from "vuex";
+import OrderDetails from '@/components/common/OrderDetails'
+export default {
+  components: {OrderDetails},
+  async mounted() {
+    let response = await axios.get("/order");
+    console.log(response);
+    console.log(response.orders[0].orderDetail);
+    //convert order created_at to date format
+    response.orders.forEach((element) => {
+      element.createdAt = new Date(element.createdAt).toLocaleDateString(
+        "TR-tr"
+      );
+      element.isDone = element.isDone ? "Tamamlandı" : "Beklemede";
+      element.isAccepted = element.isAccepted ? "Onaylandı" : "Onay Bekleniyor";
+      element.total = element.total + " ₺";
+    });
+    this.desserts = response.orders;
+    this.headers = [
+      { text: "Sipariş No", value: "id" },
+      { text: "Sipariş Durumu", value: "isDone" },
+      { text: "Sipariş Tarihi", value: "createdAt" },
+      { text: "Sipariş Onayı", value: "isAccepted" },
+      { text: "Ödeme Yöntemi", value: "paymentMethod" },
+      { text: "Toplam", value: "total" },
+    ];
+  },
+  computed:{
+    ...mapGetters(["user"]),
+  },
+  data() {
+    return {
+      search: "",
+      headers: [],
+      desserts: [],
+      expanded: [],
+      orderDetails:null
+    };
+  },
+};
 </script>
 
 <style>

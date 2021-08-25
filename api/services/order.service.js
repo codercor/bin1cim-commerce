@@ -16,8 +16,11 @@ async function add(order) {
 
 async function getAll() {
     try {
-        let status = await Order.findAll();
-        return status ? {orders:[...status],status:true}:{status:false};
+        let orders = await Order.findAll();
+        for (let i = 0; i < orders.length; i++) {
+            orders[i].dataValues.orderDetails = await orderDetailService.getallOrderDetailsByOrderId(orders[i].id);
+        }
+        return orders ? {orders,status:true}:{status:false};
     } catch (error) {
         return {status:false};
     }
@@ -38,15 +41,15 @@ async function deleteOne(id) {
 
 async function getCompanyOrders(companyId) {
     try {
-        let status = await Order.findOne({where:{companyId}});
-        return status ? {...status,status:true}:{status:false};
+        let orders = await Order.findAll({where:{companyId}});
+        for (let i = 0; i < orders.length; i++) {
+            orders[i].dataValues.orderDetails = await orderDetailService.getallOrderDetailsByOrderId(orders[i].id);
+        }
+        return orders ? {orders,status:true}:{status:false};
     } catch (error) {
         return {status:false};
     }
 }
-
-
-
 async function update(updatedData) {
     try {
         let status = await Order.update(updatedData,{where:{id:updatedData.id}});

@@ -19,12 +19,15 @@ async function deleteOne(req,res) {
     let response = await orderService.deleteOne(id);
     res.json(response);
 }
+async function getAllByCompanyId(req,res) {
+    const {companyId} = req.params;
+    let response = await orderService.getCompanyOrders(id);
+    res.json(response);
+}
 async function update(req,res) {
     const {order} = req.body;
     let response = await orderService.update(order);
     res.json(response);
 }
 
-
-
-module.exports = {add,getOne,getAll,deleteOne,update}
+module.exports = {add,getOne, getAllByCompanyId ,getAll,deleteOne,update}
