@@ -4,7 +4,7 @@
       <v-carousel-item
         v-for="(item, i) in product.images"
         :key="i"
-        :src="'http://192.168.1.3:3000/images/' + item"
+        :src="'http://localhost:3000/images/' + item"
       ></v-carousel-item>
     </v-carousel>
     <v-card-title> {{ product.name }} </v-card-title>

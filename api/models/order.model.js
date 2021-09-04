@@ -16,5 +16,4 @@ Order.init({
   modelName: 'Order' // We need to choose the model name
 });
 //Order.sync({force:true})
-
 module.exports = Order;
