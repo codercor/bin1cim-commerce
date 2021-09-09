@@ -15,6 +15,7 @@ service.interceptors.request.use(async (config)=>{
 service.interceptors.response.use(async (response)=>{
     return response.data;
 },function(error){
+    console.log(error,1);
     if(error.response.status == 401){
         store.dispatch("logout");
     }

@@ -5,10 +5,16 @@
       <Cart />
     </v-navigation-drawer>
     <v-navigation-drawer v-if="isUser" app left v-model="cartDrawer">
-     <SideMenu/>
+     <PanelSidebar/>
+    </v-navigation-drawer>
+    <v-navigation-drawer v-if="isAdmin" app left v-model="adminDrawer">
+      <AdminSidebar/>
     </v-navigation-drawer>
     <v-app-bar color="yellow" app>
       <v-btn icon color="black" @click="cartDrawer = !cartDrawer" v-if="isUser">
+        <v-icon>mdi-menu</v-icon>
+      </v-btn>
+       <v-btn icon color="black" @click="adminDrawer = !adminDrawer" v-if="isAdmin">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
       <v-toolbar-title>bin1cim (beta)</v-toolbar-title>
@@ -27,15 +33,19 @@
 <script>
 import { mapGetters } from "vuex";
 import Cart from "./components/panel/Cart";
-import SideMenu from './components/common/SideMenu'
+import PanelSidebar  from './components/panel/Sidebar/index.vue'
+import AdminSidebar  from './components/admin/Sidebar/index.vue'
 export default {
-  components: { Cart,SideMenu },
-  data: () => ({ cartDrawer: false, menuDrawer: false }),
+  components: { Cart,PanelSidebar,AdminSidebar },
+  data: () => ({ cartDrawer: false, menuDrawer: false, adminDrawer: false }),
   computed: {
     ...mapGetters(["user"]),
     isUser() {
       return this.user.role == 2;
     },
+    isAdmin() {
+      return this.user.role == 1;
+    }
   },
 };
 </script>

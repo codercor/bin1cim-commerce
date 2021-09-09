@@ -7,6 +7,7 @@ async function add(req,res) {
       images.push(f.filename);
     })
     product.images =  JSON.stringify(images);
+    console.log(product);
     let response = await productService.add(product);
     res.json(response);
 }

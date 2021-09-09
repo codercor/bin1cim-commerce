@@ -8,7 +8,10 @@ router.use(auth);
 
 
 
-router.route("/").get(productController.getAll).post(multer.array("images[]",80),productController.add);
+router.route("/").get(productController.getAll).post(multer.array("images[]",80),(req,res,next)=>{
+    console.log(req.body,44);
+    next()
+},productController.add);
 router.route("/:id").get(productController.getOne).put(productController.update).delete(productController.deleteOne);
 
 module.exports = router;

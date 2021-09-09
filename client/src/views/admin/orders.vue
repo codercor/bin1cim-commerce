@@ -1,5 +1,7 @@
 <template>
-    <v-container></v-container>
+    <v-container>
+        Orders
+    </v-container>
 </template>
 
 <script>

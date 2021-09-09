@@ -7,7 +7,6 @@ Product.init({
     name:DataTypes.TEXT,
     prices:DataTypes.TEXT, //[{200:'20TL'},{500:'15TL'},{1000:'10TL'}]
     images:DataTypes.TEXT, //['a.jpg','b.png']
-    stock:DataTypes.INTEGER, //558
     description: DataTypes.TEXT
 }, {
   // Other model options go here

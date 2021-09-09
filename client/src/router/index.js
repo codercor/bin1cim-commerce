@@ -40,14 +40,14 @@ const adminRoutes = [
     component: () => import('../views/admin/home.vue')
   },
   {
-    path: 'history',
-    name: 'History',
-    component: () => import('../views/admin/history.vue')
+    path: 'products',
+    name: 'Products',
+    component: () => import('../views/admin/products.vue')
   },
   {
-    path: 'incomings',
-    name: 'Incomings',
-    component: () => import('../views/admin/incomings.vue')
+    path: 'orders',
+    name: 'Orders',
+    component: () => import('../views/admin/orders.vue')
   }, {
     path: 'users',
     name: 'Users',
