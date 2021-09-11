@@ -7,7 +7,9 @@ export default {
         pageLength: 0,
         cart: [],
         orders: [],
-        productPerPage: 6
+        productPerPage: 6,
+        snackbar:true,
+    snackbarMessage:'',
 
     },
     mutations: {
@@ -77,7 +79,12 @@ export default {
         },
         deleteItemCart({ commit }, index) {
             commit("deleteItemCart", index);
-        }
+        },
+        //snackbar
+        setSnackbar(state, payload) {
+            state.snackbar = payload.snackbar;
+            state.snackbarMessage = payload.snackbarMessage;
+          },
     },
     getters: {
         products(state) {
@@ -92,6 +99,8 @@ export default {
         },
         productPerPage(state) {
             return state.productPerPage;
-        }
+        },
+        snackbar: state => state.snackbar,
+        snackbarMessage: state => state.snackbarMessage,
     },
 }

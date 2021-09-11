@@ -1,78 +1,94 @@
 import axios from '@/services/axios';
 import FormData from 'form-data'
 export default {
-    state:{
-        orderCrud:{
-            editedIndex:-1,
-            editedItem:{},
-            defaultItem:{},
-            orders:[],
-            headers:[],
+    state: {
+        orderCrud: {
+            editedIndex: -1,
+            editedItem: {},
+            defaultItem: {},
+            orders: [],
+            headers: [],
         },
-        productCrud:{
-            editedIndex:-1,
-            editedItem:{
-                name:"",
-                prices:[],
-                images:[],
-                description:""
+        productCrud: {
+            pageLength: 0,
+            productPerPage: 6,
+            editedIndex: -1,
+            editedItem: {
+                name: "",
+                prices: [],
+                images: [],
+                description: ""
             },
-            defaultItem:{},
-            products:[],
-            headers:[],
+            defaultItem: {},
+            products: [],
+            headers: [],
         },
-        userCrud:{
-            editedIndex:-1,
-            editedItem:{},
-            defaultItem:{},
-            users:[],
-            headers:[],
+        userCrud: {
+            editedIndex: -1,
+            editedItem: {},
+            defaultItem: {},
+            users: [],
+            headers: [],
         },
     },
-    mutations:{
+    mutations: {
         //set products
-        setProducts(state,products){
+        setProducts(state, products) {
             state.productCrud.products = products;
         },
         //set product name
-        setProductName(state,name){
+        setProductName(state, name) {
             state.productCrud.editedItem.name = name;
+        },
+        //set page length
+        setPageLength(state, length) {
+            state.productCrud.pageLength = length;
         }
     },
-    actions:{
+    actions: {
         //get products
-        getProducts({commit}){
-             axios.get('/product').then(res=>{
-                commit('setProducts',res.products);
-            });
+        async getProducts({ commit, state }, {page,keyword}) {
+            if(keyword==null) keyword = "";
+            try {
+                const response = await axios.get(`/product?page=${page}&keyword=${keyword}`);
+                console.log(response);
+                response.products.forEach(product => {
+                   
+                    product.images = eval(product.images);
+                    
+                    product.prices = eval(product.prices)
+                })
+                commit("setProducts", response.products);
+                commit("setPageLength", Math.ceil(response.length / state.productPerPage));
+
+            } catch (e) {
+                commit("setProducts", [])
+                commit("setPageLength", 0)
+                console.log(e);
+            }
         },
-       async addProduct(c,product){
+        async addProduct(c, product) {
             let form = new FormData()
-            form.append('name',product.name);
-            form.append('description',product.description);
-            product.uploadImages.forEach(image=>{
-                form.append('images[]',image);
+            form.append('name', product.name);
+            form.append('description', product.description);
+            product.images.forEach(image => {
+                form.append('images[]', image);
             });
-            form.append('prices',JSON.stringify(product.prices));
-            let res = await axios.post('/product',form,{
+            form.append('prices', JSON.stringify(product.prices));
+            let res = await axios.post('/product', form, {
                 headers: {
-                  'accept': 'application/json',
-                  'Content-Type': `multipart/form-data;`,
+                    'accept': 'application/json',
+                    'Content-Type': `multipart/form-data;`,
                 }
-              });
+            });
             console.log(res);
             return res;
         }
     },
-    getters:{
-       products(state){
-           state.productCrud.products = state.productCrud.products.map(product=>{
-               product.prices = JSON.parse(product.prices);
-               product.images = JSON.parse(product.images);
-               return product;
-           });
-           return state.productCrud.products;
-       }
+    getters: {
+        products(state) {
+            return state.productCrud.products;
+        }
     },
-    namespaced:true
+    namespaced: true
 }

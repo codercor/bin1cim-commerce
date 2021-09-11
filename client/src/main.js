@@ -10,7 +10,7 @@ import 'vuesax/dist/vuesax.css' //Vuesax styles
 Vue.use(Vuesax, {})
 
 Vue.config.productionTip = false
-
+Vue.prototype.window = window
 new Vue({
   router,
   store,
