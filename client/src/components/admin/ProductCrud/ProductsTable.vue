@@ -31,7 +31,7 @@
       </div>
       <v-row v-if="dialog.type == 'prices'">
         <!-- show prices -->
-        <v-col cols="12" sm="6" md="4" lg="3">
+        <v-col cols="12">
           <v-simple-table>
             <template v-slot:default>
               <thead>
