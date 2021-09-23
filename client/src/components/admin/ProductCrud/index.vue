@@ -120,6 +120,8 @@ export default {
           })
           this.product = this.defaultProduct;
           this.step = 1;
+          this.getProducts({page:1,keyword:""});
+
      }
      else {
         this.$vs.notification({
@@ -137,7 +139,7 @@ export default {
     passPrices(prices) {
       this.product.prices = prices;
     },
-    ...mapActions("admin",["addProduct"]),
+    ...mapActions("admin",["addProduct","getProducts"]),
   },
 };
 </script>

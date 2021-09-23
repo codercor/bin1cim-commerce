@@ -12,11 +12,11 @@ async function add(product) {
 
 }
 
-async function getAll({page, keyword}) {
+async function getAll({page, keyword,perPage}) {
     try {
         let products = await Product.findAll({
-            limit: 6,
-            offset: (page - 1) * 6,
+            limit: perPage,
+            offset: (page - 1) * perPage,
             where: {
                 name: { 
                     [Op.like]: `%${keyword}%` 
@@ -55,9 +55,10 @@ async function deleteOne(id) {
 
 async function update(updatedData) {
     try {
-        let status = await Product.update(updatedData, { where: { id: updatedData.id } });
-        return status ? { ...status, status: true } : { status: false };
+        let response = await Product.update(updatedData, { where: { id: updatedData.id } });
+        return response ? { ...response, status: true } : { status: false };
     } catch (error) {
+        console.log(error);
         return { status: false };
     }
 }

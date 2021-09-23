@@ -12,7 +12,7 @@ router.route("/").get(productController.getAll).post(multer.array("images[]",80)
     console.log(req.body,44);
     next()
 },productController.add);
-router.route("/:id").get(productController.getOne).put(productController.update).delete(productController.deleteOne);
+router.route("/:id").get(productController.getOne).put(multer.array("newimages[]",80),productController.update).delete(productController.deleteOne);
 
 module.exports = router;
 

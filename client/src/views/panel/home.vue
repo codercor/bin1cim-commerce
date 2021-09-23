@@ -45,6 +45,7 @@ export default {
   data: () => ({
     page: 1,
     keyword: "",
+    perPage:10
   }),
   components: {
     Product,
@@ -56,22 +57,23 @@ export default {
     ...mapActions(["getProducts", "unloadProducts", "searchProduct"]),
     async search() {
       this.page = 1;
-      let { keyword,page } = this;
+      let { keyword,page,perPage } = this;
       await this.getProducts({
         page,
-        keyword
+        keyword,
+        perPage
       });
     },
   },
   async beforeMount() {
     this.unloadProducts();
-    let { page, keyword } = this;
-    await this.getProducts({ page, keyword });
+    let { page, keyword,perPage } = this;
+    await this.getProducts({ page, keyword,perPage });
   },
   watch: {
     page() {
-      let { page, keyword } = this;
-      this.getProducts({ page, keyword });
+      let { page, keyword,perPage } = this;
+      this.getProducts({ page, keyword,perPage });
     },
     keyword(){
       this.search();

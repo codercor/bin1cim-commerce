@@ -1,5 +1,5 @@
 <template>
-    <vs-dialog blur v-model="dialog.open">
+    <vs-dialog prevent-close blur v-model="dialog.open">
           <template #header>
           <h4 class="not-margin">
             {{ dialog.title }}

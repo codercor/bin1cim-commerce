@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-data-table :headers="headers" :items="products">
+    <v-data-table :items-per-page="perPage" page-count="50" :headers="headers" :page="page" :items="products">
       <template v-slot:item.prices="{ item }">
         <v-btn @click="showPrices(item)"> Fiyatları Gör </v-btn>
       </template>
@@ -18,7 +18,7 @@
         <v-btn icon @click="editProduct(item)">
           <v-icon>mdi-pen</v-icon>
         </v-btn>
-        <v-btn icon @click="deleteProduct(item)">
+        <v-btn icon @click="deleteProductDialog(item)">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </template>
@@ -96,11 +96,30 @@
           </v-img>
         </v-col>
       </v-row>
-      <v-row
-       v-if="dialog.type == 'edit'"
-      >
-        <EditProduct :product="dialog.content" />
+      <v-row v-if="dialog.type == 'edit'">
+        <EditProduct @closeDialog="closeDialog" :product="dialog.content" />
       </v-row>
+      <div v-if="dialog.type == 'delete'">
+        <v-row>
+          <v-col cols="12">
+            <v-card-title>
+              {{ dialog.content.name }} adlı ürünü silmek istediğinize emin
+              misiniz?
+            </v-card-title>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-card-actions>
+              <v-btn
+                @click="deleteProduct(dialog.content.id)"
+                style="background: red; color: white; width: 100%"
+                >Sil</v-btn
+              >
+            </v-card-actions>
+          </v-col>
+        </v-row>
+      </div>
     </Dialog>
   </div>
 </template>
@@ -108,14 +127,14 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import Dialog from "@/components/common/Dialog";
-import EditProduct from './EditProduct.vue';
+import EditProduct from "./EditProduct.vue";
 export default {
   components: {
     Dialog,
     EditProduct,
   },
   mounted: function () {
-    this.getProducts({ page: 1, keyword: "" });
+    this.getProducts({ page: this.page, keyword: "",perPage:this.perPage });
   },
   data() {
     return {
@@ -124,6 +143,8 @@ export default {
         title: "",
         type: "text",
         content: null,
+        page:1,
+        perPage:10,
       },
       headers: [
         {
@@ -163,27 +184,53 @@ export default {
     };
   },
   methods: {
-    ...mapActions("admin", ["getProducts"]),
+    ...mapActions("admin", ["getProducts", "deleteProductRequest"]),
     showImages(item) {
       this.dialog.type = "images";
       this.dialog.content = item.images;
       this.dialog.open = true;
+      this.$forceUpdate();
     },
     showDescription(item) {
       this.dialog.type = "text";
       this.dialog.content = item.description;
       this.dialog.open = true;
+      this.$forceUpdate();
     },
     showPrices(item) {
       this.dialog.type = "prices";
+      console.log(item);
       this.dialog.content = item.prices;
       this.dialog.open = true;
+      this.$forceUpdate();
     },
     editProduct(item) {
       this.dialog.type = "edit";
       this.dialog.open = true;
       this.dialog.content = item;
+      this.$forceUpdate();
     },
+    deleteProductDialog(item) {
+      this.dialog.type = "delete";
+      this.dialog.content = item;
+      this.dialog.open = true;
+      this.$forceUpdate();
+    },
+    async deleteProduct(id) {
+      await this.deleteProductRequest(id);
+      this.$vs.notification({
+        title: "Ürün Silindi ",
+        text: "Ürün silindi ekranınız güncellendi.",
+        color: "danger",
+        progress: "auto",
+        position: "top-right",
+      });
+      await this.getProducts({ page: this.page, keyword: "",perPage:this.perPage });
+      this.dialog.open = false;
+    },
+    closeDialog(){
+      this.dialog.open = false;
+    }
   },
   computed: {
     ...mapGetters("admin", ["products"]),

@@ -47,10 +47,10 @@ export default {
     },
     actions: {
         //get products
-        async getProducts({ commit, state }, {page,keyword}) {
+        async getProducts({ commit }, {page,keyword,perPage}) {
             if(keyword==null) keyword = "";
             try {
-                const response = await axios.get(`/product?page=${page}&keyword=${keyword}`);
+                const response = await axios.get(`/product?page=${page}&keyword=${keyword}&perPage=${perPage}`);
                 console.log(response);
                 response.products.forEach(product => {
                    
@@ -59,7 +59,7 @@ export default {
                     product.prices = eval(product.prices)
                 })
                 commit("setProducts", response.products);
-                commit("setPageLength", Math.ceil(response.length / state.productPerPage));
+                commit("setPageLength", Math.ceil(response.length / perPage));
 
             } catch (e) {
                 commit("setProducts", [])
@@ -83,7 +83,33 @@ export default {
             });
             console.log(res);
             return res;
+        },
+        async editProduct(c, product) {
+            console.log(product,88);
+            let form = new FormData()
+            form.append('name', product.name);
+            form.append('description', product.description);
+            product.newImages.forEach(image => {
+                form.append('newimages[]', image);
+            });
+            form.append('images', JSON.stringify(product.images));
+            form.append('deletedImages', JSON.stringify(product.deletedImages)); 
+            form.append('prices', JSON.stringify(product.prices));
+            let res = await axios.put('/product/' + product.id, form, {
+                headers: {
+                    'accept': 'application/json',
+                    'Content-Type': `multipart/form-data;`,
+                }
+            });
+            console.log(res);
+            return res;
+        },
+        async deleteProductRequest(c, id) {
+            let res = await axios.delete('/product/' + id);
+            console.log(res);
+            return res;
         }
+
     },
     getters: {
         products(state) {

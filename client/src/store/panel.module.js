@@ -36,10 +36,10 @@ export default {
 
     },
     actions: {
-        async getProducts({ commit, state }, {page,keyword}) {
+        async getProducts({ commit }, {page,keyword,perPage}) {
             if(keyword==null) keyword = "";
             try {
-                const response = await axios.get(`/product?page=${page}&keyword=${keyword}`);
+                const response = await axios.get(`/product?page=${page}&keyword=${keyword}&perPage=${perPage}`);
                 console.log(response);
                 response.products.forEach(product => {
                     product.images = eval(product.images);
@@ -47,7 +47,7 @@ export default {
                 })
                 console.log("şimdi gelen veri ile çalıştırılıp eklenecek", response.products);
                 commit("setProducts", response.products);
-                commit("setPageLength", Math.ceil(response.length / state.productPerPage));
+                commit("setPageLength", Math.ceil(response.length / perPage));
 
             } catch (e) {
                 commit("setProducts", [])
