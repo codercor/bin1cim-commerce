@@ -1,6 +1,16 @@
 <template>
   <div>
-    <v-data-table :items-per-page="perPage" page-count="50" :headers="headers" :page="page" :items="products">
+    <v-data-table
+      :loading="loading"
+      loading-text="Yükleniyor bekleyiver..."
+      :headers="headers"
+      :items="products"
+      :items-per-page="100"
+      hide-default-footer
+    >
+    <template v-slot:top>
+      <v-text-field v-model="keyword" rounded dense filled clearable elevation="5" label="Ürün ara..."></v-text-field>
+    </template>
       <template v-slot:item.prices="{ item }">
         <v-btn @click="showPrices(item)"> Fiyatları Gör </v-btn>
       </template>
@@ -21,6 +31,30 @@
         <v-btn icon @click="deleteProductDialog(item)">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
+      </template>
+      <template v-slot:footer>
+        <v-row>
+          <v-col offset="5">
+            <v-pagination
+              v-model="page"
+              total-visible="10"
+              circle
+              dark
+              :length="productsPageLength"
+            ></v-pagination>
+          </v-col>
+          <v-col cols="1">
+            <v-text-field
+              width="100px"
+              :value="perPage"
+              label="Göster"
+              type="number"
+              min="1"
+              max="100"
+              @input="perPage = Number($event)"
+            ></v-text-field>
+          </v-col>
+        </v-row>
       </template>
     </v-data-table>
     <Dialog :dialog="dialog">
@@ -133,18 +167,31 @@ export default {
     Dialog,
     EditProduct,
   },
-  mounted: function () {
-    this.getProducts({ page: this.page, keyword: "",perPage:this.perPage });
+  mounted: async function () {
+    await this.refreshProducts();
+  },
+  watch: {
+    perPage() {
+      this.refreshProducts();
+    },
+    page(){
+      this.refreshProducts();
+    },
+    keyword(){
+      this.refreshProducts();
+    }
   },
   data() {
     return {
+      page: 1,
+      perPage: 5,
+      keyword:"",
+      loading: true,
       dialog: {
         open: false,
         title: "",
         type: "text",
         content: null,
-        page:1,
-        perPage:10,
       },
       headers: [
         {
@@ -172,13 +219,6 @@ export default {
           text: "İşlemler",
           value: "actions",
           sortable: false,
-        },
-      ],
-      items: [
-        {
-          name: "Xiomi Kablo Orjinal 5 Metre",
-          price: "$1",
-          images: "",
         },
       ],
     };
@@ -225,15 +265,28 @@ export default {
         progress: "auto",
         position: "top-right",
       });
-      await this.getProducts({ page: this.page, keyword: "",perPage:this.perPage });
+      await this.getProducts({
+        page: this.page,
+        keyword: "",
+        perPage: this.perPage,
+      });
       this.dialog.open = false;
     },
-    closeDialog(){
+    closeDialog() {
       this.dialog.open = false;
-    }
+    },
+    async refreshProducts() {
+      this.loading = true;
+      await this.getProducts({
+        page: this.page,
+        keyword: this.keyword,
+        perPage: this.perPage,
+      });
+      this.loading = false;
+    },
   },
   computed: {
-    ...mapGetters("admin", ["products"]),
+    ...mapGetters("admin", ["products", "productsPageLength"]),
   },
 };
 </script>

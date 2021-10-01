@@ -26,6 +26,11 @@ async function getUsers() {
     return users;
 }
 
+async function getUserById(){
+    let user = await User.findOne({where:{id:1}});
+    return user;
+}
+
 function createToken(payload) {
     const token = jwt.sign(payload,require('../config/config').jwt.secret,{expiresIn:require('../config/config').jwt.accessExpirationMinutes+'m'})
     return token;
@@ -34,4 +39,4 @@ function createToken(payload) {
 
 
 
-module.exports = { login, register,getUsers }
+module.exports = { login, register,getUsers,getUserById }

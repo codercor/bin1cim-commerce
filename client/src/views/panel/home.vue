@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    
     <v-row>
       <v-col sm="12" cols="12" md="4" offset-md="4">
         <v-text-field
@@ -13,6 +12,11 @@
           clearable
         >
         </v-text-field>
+      </v-col>
+    </v-row>
+      <v-row>
+      <v-col offset="11" cols="1">
+     <v-select v-model="perPage"  hint="Göster" persistent-hint  :items="perPages" />
       </v-col>
     </v-row>
     <v-row>
@@ -45,7 +49,8 @@ export default {
   data: () => ({
     page: 1,
     keyword: "",
-    perPage:10
+    perPages:[3,6,9,12,15],
+    perPage:6
   }),
   components: {
     Product,
@@ -64,6 +69,14 @@ export default {
         perPage
       });
     },
+    async refreshProducts(){
+      let { keyword,page,perPage } = this;
+      await this.getProducts({
+        page,
+        keyword,
+        perPage
+      });
+    }
   },
   async beforeMount() {
     this.unloadProducts();
@@ -72,8 +85,10 @@ export default {
   },
   watch: {
     page() {
-      let { page, keyword,perPage } = this;
-      this.getProducts({ page, keyword,perPage });
+     this.refreshProducts()
+    },
+    perPage() {
+     this.refreshProducts()
     },
     keyword(){
       this.search();

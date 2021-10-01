@@ -3,9 +3,9 @@ const auth = require("../../middlewares/auth");
 const orderController = require("../../controllers/order.controller");
 router.use(auth);
 
-router.route("/").get(orderController.getAll).post(orderController.add);
+router.route("/").get(orderController.getAll).post(orderController.add).put(orderController.update)
 router.route('/company/:companyId').get(orderController.getAllByCompanyId);
-router.route("/:id").get(orderController.getOne).put(orderController.update).delete(orderController.deleteOne);
+router.route("/:id").get(orderController.getOne).delete(orderController.deleteOne);
 
 
 module.exports = router;

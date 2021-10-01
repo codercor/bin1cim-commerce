@@ -1,12 +1,15 @@
 <template>
     <v-container>
-        Orders
+        <OrderCrud/>
     </v-container>
 </template>
 
 <script>
+import OrderCrud from '@/components/admin/OrderCrud'
 export default {
-
+    components: {
+        OrderCrud
+    }   
 }
 </script>
 
