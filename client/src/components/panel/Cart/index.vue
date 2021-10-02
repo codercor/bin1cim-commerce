@@ -1,9 +1,11 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="6">
         <h1>Sepetiniz</h1>
-        <v-divider></v-divider>
+      </v-col>
+      <v-col offset="4" cols="2">
+        <v-icon @click="toggle()">mdi-close</v-icon>
       </v-col>
       <v-col cols="12" v-if="cart.length < 1">
         <h3>Sepette hiç ürün yok malesef...</h3>
@@ -23,11 +25,11 @@
               <v-list-item>
                 <v-list-item-avatar>
                   <v-img
-                    :src="'http://localhost:3000/images/' + item.images[0]"
+                    :src="photoUrl + item.images[0]"
                   ></v-img>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title>Xiomi Mi 10</v-list-item-title>
+                  <v-list-item-title> {{item.name}} </v-list-item-title>
 
                   <v-list-item-subtitle>
                     50 adet * 1000₺ = 50000₺
@@ -84,6 +86,7 @@
 import { mapGetters, mapActions } from "vuex";
 import { v4 } from "uuid";
 export default {
+  props:["toggle"],
   data() {
     return {
       cartItems: [],
@@ -104,6 +107,9 @@ export default {
       this.cart.forEach((item) => (totalPrice += item.price));
       return totalPrice;
     },
+    photoUrl() {
+      return process.env.VUE_APP_API_PHOTO_URL;
+    }
   },
   methods: {
     generatedId() {

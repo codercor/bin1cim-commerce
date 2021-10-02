@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h2>Son 7 Günlük Veriler</h2>
+        <h2>Son 7 Günlük Veriler  </h2>
       </v-col>
       <v-col cols="12" md="4">
         <OrderCount

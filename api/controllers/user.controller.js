@@ -11,9 +11,23 @@ async function register(req,res) {
    res.json(status);
 }
 
-async function getUsers(req,res) {
-    let users = await userService.getUsers();
-    res.json({users});
+async function update(req, res) {
+  const {user} = req.body;
+  let response = await userService.update(user);
+  res.json(response);
 }
 
-module.exports = {login,register,getUsers}
+async function deleteUser(req,res) {
+  let response = await userService.deleteUser(req.params.id);
+  res.json(response);
+}
+
+async function getUsers(req,res) {
+    const perPage = parseInt(req.query.perPage) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const companyName = req.query.companyName ||"";
+    let response = await userService.getUsers({perPage,page,companyName});
+    res.json(response);
+}
+
+module.exports = {login,register,getUsers,update,deleteUser};

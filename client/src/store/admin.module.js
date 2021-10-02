@@ -25,6 +25,7 @@ export default {
             headers: [],
         },
         userCrud: {
+            pageLength: 0,
             editedIndex: -1,
             editedItem: {},
             defaultItem: {},
@@ -48,11 +49,19 @@ export default {
         },
         //####### PRODUCTS END #######//
         //####### ORDERS BEGIN #######//
-        setOrders(state,orders){
+        setOrders(state, orders) {
             state.orderCrud.orders = orders;
         },
-        setOrdersPageLength(state,length){
+        setOrdersPageLength(state, length) {
             state.orderCrud.pageLength = length;
+        },
+        //####### ORDERS END #######//
+        //####### USERS BEGIN #######//
+        setUsers(state, users) {
+            state.userCrud.users = users;
+        },
+        setUsersPageLength(state, length) {
+            state.userCrud.pageLength = length;
         }
     },
     actions: {
@@ -139,16 +148,52 @@ export default {
                 console.log(e);
             }
         },
-        async updateOrder(c,order){
-            let res = await axios.put('/order', {order});
+        async updateOrder(c, order) {
+            let res = await axios.put('/order', { order });
             console.log(res);
             return res;
         },
-        async deleteOrder(c,id){
-            let res = await axios.delete('/order/'+id);
+        async deleteOrder(c, id) {
+            let res = await axios.delete('/order/' + id);
+            console.log(res);
+            return res;
+        },
+        //####### ORDERS END #######//
+        //####### USERS BEGIN #######//
+        async getUsers({ commit }, { page, companyName, perPage }) {
+            try {
+                if (!companyName) companyName = "";
+                const response = await axios.get(`/user?page=${page}&perPage=${perPage}&companyName=${companyName}`);
+                console.log(response);
+                commit("setUsers", response.users);
+                commit("setUsersPageLength", Math.ceil(response.length / perPage));
+
+            } catch (e) {
+                commit("setUsers", [])
+                commit("setUsersPageLength", 0)
+                console.log(e);
+            }
+        },
+        async addUser(c, user) {
+            //add user with json
+            let res = await axios.post('/user', user);
+            return res;
+        },
+        async updateUser(c, user) {
+            //edit user with json
+            console.log("####",user);
+            user.createdAt = new Date(Date.now());
+            let res = await axios.put('/user', { user });
+            console.log(res);
+            return res;
+        },
+        async deleteUser(c, id) {
+            //delete user with id
+            let res = await axios.delete('/user/' + id);
             console.log(res);
             return res;
         }
+        //####### USERS END #######//
     },
     getters: {
         products(state) {
@@ -163,6 +208,12 @@ export default {
         ordersPageLength(state) {
             return state.orderCrud.pageLength;
         },
+        users(state) {
+            return state.userCrud.users;
+        },
+        usersPageLength(state) {
+            return state.userCrud.pageLength;
+        }
     },
     namespaced: true
 }

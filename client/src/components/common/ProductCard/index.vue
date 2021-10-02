@@ -4,7 +4,7 @@
       <v-carousel-item
         v-for="(item, i) in product.images"
         :key="i"
-        :src="'http://localhost:3000/images/' + item"
+        :src="photoUrl + item"
       ></v-carousel-item>
     </v-carousel>
     <v-card-title> {{ product.name }} </v-card-title>
@@ -81,13 +81,13 @@
               <span
                 v-if="
                   amount < Number(Object.keys(product.prices[1])[0]) &&
-                  amount >= 200
+                  amount >= Number(Object.keys(product.prices[0])[0])
                 "
                 class="subtitle-1"
               >
                 {{ product.prices[1] | getPrice }}
               </span>
-              <span v-if="amount <= 1000 && amount >= 500" class="subtitle-1">
+              <span v-if="amount <= Number(Object.keys(product.prices[2])[0]) && amount >= Number(Object.keys(product.prices[1])[0])" class="subtitle-1">
                 {{ product.prices[2] | getPrice }}
               </span>
             </div>
@@ -134,7 +134,10 @@ export default {
       return Object.values(data)[0];
     },
   },
-  computed: {
+  computed: {  
+    photoUrl(){
+            return process.env.VUE_APP_API_PHOTO_URL;
+        },
     unitPrice: function () {
       const { amount, product } = this;
       if (amount > 0 && amount < Number(Object.keys(product.prices[0])[0])) {

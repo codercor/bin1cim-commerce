@@ -15,7 +15,7 @@ User.init({
   },
   role: {
     type: DataTypes.TEXT,
-    defaultValue: "0"
+    defaultValue: "2"
   }
 }, {
   // Other model options go here

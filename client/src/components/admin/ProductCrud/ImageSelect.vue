@@ -5,7 +5,7 @@
           <!-- exitisting images -->
            <v-col v-for="image in existingImagesCopy" :key="image" cols="6" sm="6" md="4" lg="3" xl="2" class="text-center">
                
-              <v-img  aspect-ratio="0.7"  :src="`http://localhost:3000/images/${image}`" >
+              <v-img  aspect-ratio="0.7"  :src="photoUrl+image" >
                 <v-btn small rounded class="white--text"  color="red" @click="deleteExistings(image)"> <v-icon>mdi-close</v-icon></v-btn>
               </v-img>
           </v-col>
@@ -50,6 +50,11 @@ export default {
             this.existingImagesCopy.splice(this.existingImagesCopy.indexOf(image),1)
             this.deletedImages.push(image)
         },  
+    },
+    computed:{
+        photoUrl(){
+            return process.env.VUE_APP_API_PHOTO_URL;
+        }
     },
     watch: {
         images() {

@@ -7,18 +7,20 @@ export default  {
         name:"",
         lastName:"",
         isLoggedIn:false,
+        companyName:"",
         token:"",
         role:""
     },
     mutations:{
-        setUserData:function(state,{id,username,name,lastName,token,isLoggedIn,role}){
+        setUserData:function(state,{id,username,name,lastName,token,isLoggedIn,role,companyName}){
             state.userId =id;
             state.username = username;
             state.name = name;
             state.lastName = lastName;
             state.token = token;
             state.isLoggedIn = isLoggedIn;
-            state.role = role
+            state.role = role;
+            state.companyName = companyName;
         },
     },
     actions:{

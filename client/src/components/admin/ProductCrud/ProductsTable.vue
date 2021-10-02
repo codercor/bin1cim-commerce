@@ -115,7 +115,7 @@
           cols="4"
         >
           <v-img
-            :src="`http://localhost:3000/images/${n}`"
+            :src="photoUrl+n"
             aspect-ratio="1"
             class="grey lighten-2"
           >
@@ -287,6 +287,9 @@ export default {
   },
   computed: {
     ...mapGetters("admin", ["products", "productsPageLength"]),
+    photoUrl(){
+            return process.env.VUE_APP_API_PHOTO_URL;
+        }
   },
 };
 </script>
